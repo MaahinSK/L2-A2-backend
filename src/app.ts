@@ -11,20 +11,33 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: env.corsOrigin,
+  origin: env.corsOrigin || '*',
   credentials: true,
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Health check endpoint
-app.get('/health', (_req: Request, res: Response) => {
+app.get('/api/health', (_req: Request, res: Response) => {
   res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/issues', issuesRoutes);
+
+// Root endpoint
+app.get('/', (_req: Request, res: Response) => {
+  res.status(200).json({ 
+    message: 'DevPulse API is running',
+    version: '1.0.0',
+    endpoints: {
+      auth: '/api/auth',
+      issues: '/api/issues',
+      health: '/api/health'
+    }
+  });
+});
 
 // 404 handler
 app.use((_req: Request, res: Response) => {
@@ -34,12 +47,14 @@ app.use((_req: Request, res: Response) => {
 // Global error handler
 app.use(errorHandler);
 
+// Export for Vercel
+export default app;
+
 // Start server only if not running on Vercel
 if (process.env.NODE_ENV !== 'production') {
-  app.listen(env.port, () => {
-    console.log(`🚀 Server running on http://localhost:${env.port}`);
-    console.log(`📝 API available at http://localhost:${env.port}/api`);
+  const PORT = env.port || 5000;
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
+    console.log(`📝 API available at http://localhost:${PORT}/api`);
   });
 }
-
-export default app;
