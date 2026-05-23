@@ -4,10 +4,11 @@
   "description": "DevPulse Issue Tracker Backend",
   "main": "dist/app.js",
   "scripts": {
-    "dev": "nodemon --exec ts-node src/app.ts",
+    "dev": "nodemon",
     "build": "tsc",
     "start": "node dist/app.js",
-    "vercel-build": "npm run build"
+    "vercel-build": "npm run build",
+    "clean": "rm -rf dist"
   },
   "dependencies": {
     "express": "^4.18.2",
