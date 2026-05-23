@@ -104,7 +104,7 @@ export const issuesService = {
     updateData: UpdateIssueRequest,
     userId: number,
     userRole: string,
-    currentStatus?: string
+    _currentStatus?: string
   ): Promise<IssueWithReporter | null> {
     // First check if issue exists and get reporter_id
     const issueCheck = await query('SELECT reporter_id, status FROM issues WHERE id = $1', [id]);
@@ -177,7 +177,7 @@ export const issuesService = {
   async updateIssueStatus(
     id: number,
     status: string,
-    userId: number,
+    _userId: number,
     userRole: string
   ): Promise<IssueWithReporter | null> {
     // Only maintainers can change status
