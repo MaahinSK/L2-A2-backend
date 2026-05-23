@@ -7,7 +7,7 @@ interface EnvConfig {
   databaseUrl: string;
   jwtSecret: string;
   bcryptSaltRounds: number;
-  corsOrigin: string;
+  corsOrigin: string[];
 }
 
 export const env: EnvConfig = {
@@ -15,7 +15,7 @@ export const env: EnvConfig = {
   databaseUrl: process.env.DATABASE_URL || '',
   jwtSecret: process.env.JWT_SECRET || 'default-secret-change-this',
   bcryptSaltRounds: parseInt(process.env.BCRYPT_SALT_ROUNDS || '10', 10),
-  corsOrigin: process.env.CORS_ORIGIN || '*',
+  corsOrigin: (process.env.CORS_ORIGIN || '*').split(',').map(o => o.trim()),
 };
 
 // Validate required environment variables
