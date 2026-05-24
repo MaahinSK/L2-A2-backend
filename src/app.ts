@@ -10,8 +10,18 @@ import { StatusCodes } from 'http-status-codes';
 const app = express();
 
 // Middleware
+const allowedOrigins = (process.env.CORS_ORIGIN || '*').split(',').map(o => o.trim());
+
 app.use(cors({
-  origin: env.corsOrigin || '*',
+  origin: (origin, callback) => {
+    // Allow requests with no origin (curl, Postman, server-to-server)
+    if (!origin) return callback(null, true);
+    // Allow wildcard
+    if (allowedOrigins.includes('*')) return callback(null, true);
+    // Allow specific origins
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error(`CORS blocked for origin: ${origin}`));
+  },
   credentials: true,
 }));
 app.use(express.json());
